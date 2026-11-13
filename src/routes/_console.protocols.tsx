@@ -19,15 +19,15 @@ const P = {
 } as const;
 type Key = keyof typeof P;
 
-const MOD: Record<string, { x: number; y: number; w: number; h: number; label: string }> = {
+const MOD = {
   cmd: { x: 20, y: 20, w: 150, h: 90, label: "Command Deck" },
   quarters: { x: 230, y: 20, w: 150, h: 90, label: "Crew Quarters" },
   med: { x: 20, y: 170, w: 150, h: 90, label: "Med-Bay" },
   o2: { x: 230, y: 170, w: 150, h: 90, label: "Emergency O₂ Cache" },
   airlock: { x: 20, y: 320, w: 150, h: 70, label: "Airlock" },
   shelter: { x: 230, y: 320, w: 150, h: 70, label: "Storm Shelter" },
-};
-const c = (k: string) => ({ x: MOD[k].x + MOD[k].w / 2, y: MOD[k].y + MOD[k].h / 2 });
+} as Record<string, { x: number; y: number; w: number; h: number; label: string }>;
+const c = (k: string) => { const m = MOD[k]!; return { x: m.x + m.w / 2, y: m.y + m.h / 2 }; };
 
 function Protocols() {
   const { anomaly, crew } = useAether();
@@ -60,7 +60,7 @@ function Protocols() {
       </section>
       <div className="tilt-line hidden md:block" />
       <section className="card-ed p-5 md:p-8">
-        <div className="flex items-baseline justify-between"><Label>Habitat Map</Label><span className="meta">Route → {MOD[proto.target].label}</span></div>
+        <div className="flex items-baseline justify-between"><Label>Habitat Map</Label><span className="meta">Route → {MOD[proto.target]!.label}</span></div>
         <svg viewBox="0 0 400 410" className="mt-4 w-full" fill="none">
           <g stroke="currentColor" strokeWidth=".75" className="text-meta">
             <line x1="170" y1="65" x2="230" y2="65" /><line x1="95" y1="110" x2="95" y2="170" /><line x1="305" y1="110" x2="305" y2="170" />
