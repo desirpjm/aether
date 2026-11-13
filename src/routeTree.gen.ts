@@ -10,33 +10,93 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConsoleRouteImport } from './routes/_console'
+import { Route as ConsoleCommsRouteImport } from './routes/_console.comms'
+import { Route as ConsoleProtocolsRouteImport } from './routes/_console.protocols'
+import { Route as ConsoleSealRouteImport } from './routes/_console.seal'
+import { Route as ConsoleSectorRouteImport } from './routes/_console.sector'
+import { Route as ConsoleVitalsRouteImport } from './routes/_console.vitals'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsoleRoute = ConsoleRouteImport.update({
+  id: '/_console',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleCommsRoute = ConsoleCommsRouteImport.update({
+  id: '/comms',
+  path: '/comms',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleProtocolsRoute = ConsoleProtocolsRouteImport.update({
+  id: '/protocols',
+  path: '/protocols',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleSealRoute = ConsoleSealRouteImport.update({
+  id: '/seal',
+  path: '/seal',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleSectorRoute = ConsoleSectorRouteImport.update({
+  id: '/sector',
+  path: '/sector',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleVitalsRoute = ConsoleVitalsRouteImport.update({
+  id: '/vitals',
+  path: '/vitals',
+  getParentRoute: () => ConsoleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/comms': typeof ConsoleCommsRoute
+  '/protocols': typeof ConsoleProtocolsRoute
+  '/seal': typeof ConsoleSealRoute
+  '/sector': typeof ConsoleSectorRoute
+  '/vitals': typeof ConsoleVitalsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/comms': typeof ConsoleCommsRoute
+  '/protocols': typeof ConsoleProtocolsRoute
+  '/seal': typeof ConsoleSealRoute
+  '/sector': typeof ConsoleSectorRoute
+  '/vitals': typeof ConsoleVitalsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_console': typeof ConsoleRouteWithChildren
+  '/_console/comms': typeof ConsoleCommsRoute
+  '/_console/protocols': typeof ConsoleProtocolsRoute
+  '/_console/seal': typeof ConsoleSealRoute
+  '/_console/sector': typeof ConsoleSectorRoute
+  '/_console/vitals': typeof ConsoleVitalsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/comms' | '/protocols' | '/seal' | '/sector' | '/vitals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/comms' | '/protocols' | '/seal' | '/sector' | '/vitals'
+  id:
+    | '__root__'
+    | '/'
+    | '/_console'
+    | '/_console/comms'
+    | '/_console/protocols'
+    | '/_console/seal'
+    | '/_console/sector'
+    | '/_console/vitals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsoleRoute: typeof ConsoleRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +108,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_console': {
+      id: '/_console'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_console/comms': {
+      id: '/_console/comms'
+      path: '/comms'
+      fullPath: '/comms'
+      preLoaderRoute: typeof ConsoleCommsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/protocols': {
+      id: '/_console/protocols'
+      path: '/protocols'
+      fullPath: '/protocols'
+      preLoaderRoute: typeof ConsoleProtocolsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/seal': {
+      id: '/_console/seal'
+      path: '/seal'
+      fullPath: '/seal'
+      preLoaderRoute: typeof ConsoleSealRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/sector': {
+      id: '/_console/sector'
+      path: '/sector'
+      fullPath: '/sector'
+      preLoaderRoute: typeof ConsoleSectorRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/vitals': {
+      id: '/_console/vitals'
+      path: '/vitals'
+      fullPath: '/vitals'
+      preLoaderRoute: typeof ConsoleVitalsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
   }
 }
 
+interface ConsoleRouteChildren {
+  ConsoleCommsRoute: typeof ConsoleCommsRoute
+  ConsoleProtocolsRoute: typeof ConsoleProtocolsRoute
+  ConsoleSealRoute: typeof ConsoleSealRoute
+  ConsoleSectorRoute: typeof ConsoleSectorRoute
+  ConsoleVitalsRoute: typeof ConsoleVitalsRoute
+}
+
+const ConsoleRouteChildren: ConsoleRouteChildren = {
+  ConsoleCommsRoute: ConsoleCommsRoute,
+  ConsoleProtocolsRoute: ConsoleProtocolsRoute,
+  ConsoleSealRoute: ConsoleSealRoute,
+  ConsoleSectorRoute: ConsoleSectorRoute,
+  ConsoleVitalsRoute: ConsoleVitalsRoute,
+}
+
+const ConsoleRouteWithChildren =
+  ConsoleRoute._addFileChildren(ConsoleRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsoleRoute: ConsoleRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
