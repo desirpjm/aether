@@ -49,10 +49,10 @@ function Comms() {
           ))}
         </dl>
         <div className="mt-8 flex flex-col gap-3 border-t border-foreground pt-6 md:flex-row md:items-center md:justify-between">
-          <button onClick={send} disabled={sending} className="action text-left disabled:opacity-40">{sending ? "Transmitting…" : `Transmit Priority Health Packet → ${CH[to].h}`}</button>
+          <button onClick={send} disabled={sending} className="action text-left disabled:opacity-40">{sending ? "Transmitting…" : `Transmit Priority Health Packet → ${CH[to]!.h}`}</button>
           {sent && (
             <div className="text-left md:text-right">
-              <div className="font-sc text-lg">Packet Dispatched • {CH[sent.to].n} Acknowledged</div>
+              <div className="font-sc text-lg">Packet Dispatched • {CH[sent.to]!.n} Acknowledged</div>
               <div className="meta mt-1">{sent.at} UTC • Relay TDRS-12 • 1.3 s latency</div>
             </div>
           )}
