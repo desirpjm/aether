@@ -1,26 +1,24 @@
-# Aether
+# AETHER — Astronaut Environmental Telemetry, Health & Emergency Response
 
-Aether is a responsive web application frontend created for a NASA Hackathon.
+Built for the **2026 NASA International Space Apps Challenge** (*Create Health Monitoring Software for Astronauts on Space Missions*).
 
-It provides a visual interface with designed layouts, typography, and interactive UI states. The frontend uses realistic mock data and is built with TanStack Start and TypeScript. External databases and backend APIs are not part of the current scope.
+## Overview
+**AETHER** is an offline-ready, high-contrast astronaut biometric and life-support monitoring dashboard designed for low-glare readability and night-vision preservation in dimly lit spacecraft cabins.
 
-This project was built with [Lovable](https://lovable.dev).
+### Key Features
+- **Individualized Crew Risk Engine:** Cross-references live wearable bio-band vitals against each astronaut's age, biological sex, BMI, and prior medical history (including SANS ocular sensitivity, lumbar loading, and genomic radiation thresholds).
+- **Interactive Anatomical Hazard Explorer:** Clickable 5-node human anatomy schematic mapping sensor checks directly to NASA HRP's 5 Hazards of Human Spaceflight.
+- **Calibrated Space Sectors & Light-Time Latency:** Models environmental pressures, gravity, temperatures, and one-way Earth communication delays across ISS Low Earth Orbit, Lunar Gateway, Artemis South Pole Base, Mars Transit, and Jezero Crater.
+- **O₂ Mask & Suit Seal Diagnostic:** 5-second simulated pressure/seal scan (`ppO₂`, CO₂ scrubber capacity, seal integrity) paired with tailored emergency checklists and interactive habitat navigation routing.
+- **Autonomous Flight Surgeon Dispatch:** Compiles priority clinical telemetry packets when Earth communication delays exceed real-time response windows.
 
-## Build with Lovable
+## NASA & Partner Scientific References
+- **NASA Human Research Program (HRP):** 5 Hazards of Human Spaceflight & Spaceflight Associated Neuro-ocular Syndrome (SANS) Evidence Reports
+- **NASA-STD-3001:** Spaceflight Human-System Standard
+- **Artemis II / Lunar Gateway / LRO Diviner:** Exploration Atmosphere & Lunar South Pole Environmental Models
+- **Mars 2020 Perseverance MEDA & MSL RAD:** Martian Surface & Deep-Space Transit Telemetry
+- **Canadian Space Agency (CSA):** CANS Neutron Radiation Monitoring (~30% ISS neutron dose modeling)
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/1a1c5e02-c0dd-5708-8ff8-36719c345f5d).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+## Tools & AI Attribution
+- UI/UX Architecture, Ergonomic Design System & Clinical Logic designed by the creator.
+- Frontend React/TypeScript application scaffolded and iterated using **Lovable** (AI-assisted development tool), in compliance with NASA Space Apps AI disclosure guidelines.
