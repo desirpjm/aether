@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { jitter, useAether, useNow } from "@/lib/aether";
+import { useAether, useNow } from "@/lib/aether";
 import { pageHead } from "@/lib/head";
 import { Dot, Frame, Label, TiltLine } from "@/components/aether/ui";
+import { telemetry, measurementRisk } from "@/lib/telemetry";
+import { Anatomy } from "@/components/aether/Anatomy";
+import { Trends } from "@/components/aether/Trends";
+import { SelfCheck } from "@/components/aether/SelfCheck";
+import { Routine } from "@/components/aether/Routine";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_console/vitals")({
@@ -10,19 +15,21 @@ export const Route = createFileRoute("/_console/vitals")({
 });
 
 function Vitals() {
-  const { crew, anomaly } = useAether();
+  const { crew, anomaly, measurement } = useAether();
   const t = useNow(1200);
+  const v = telemetry(crew, anomaly, t, measurement);
+  const risks = measurementRisk(measurement);
   const m = [
-    { k: "Heart Rate", v: jitter(anomaly ? 118 : 68, 2, t, 1, 0), u: "BPM", alert: anomaly },
-    { k: "SpO₂", v: jitter(anomaly ? 89 : 98, 0.4, t, 2, 0), u: "%", alert: anomaly },
-    { k: "Core Temp", v: jitter(36.8, 0.1, t, 3), u: "°C" },
-    { k: "Radiation Dose", v: jitter(14.2, 0.05, t, 4), u: "mSv" },
-    { k: "Ocular / SANS", v: jitter(anomaly ? 24 : 19, 0.5, t, 5, 0), u: "mmHg", watch: true },
-    { k: "Hydration / Bone", v: jitter(94, 0.4, t, 6, 0), u: "%" },
+    { k: "Heart Rate", v: v.hr, u: "BPM", alert: anomaly },
+    { k: "SpO₂", v: v.spo2, u: "%", alert: anomaly },
+    { k: "Core Temp", v: v.temp, u: "°C" },
+    { k: "Radiation Dose", v: v.dose, u: "mSv" },
+    { k: "Ocular / SANS", v: v.iop, u: "mmHg", watch: v.basis.sans },
+    { k: "Hydration / Bone", v: v.hydration, u: "%" },
   ];
   return (
-    <div className="space-y-10">
-      <section className="card-ed p-6 md:p-12">
+    <div className="space-y-8">
+      <section className="py-4 sm:py-6">
         <p className="font-sans">Mission Day 142, <span className="underline underline-offset-4">{crew.short}</span>. Cabin status at a glance:</p>
         <h1 className={cn("mt-5 font-serif text-3xl leading-tight md:text-5xl", anomaly && "font-bold")}>
           {anomaly ? <><Dot className="blip mr-3 h-3 w-3 align-middle" />Oxygen saturation falling; tachycardia detected. Don mask now.</> : "Ocular pressure slightly elevated; cardiovascular rhythm nominal."}
@@ -35,16 +42,22 @@ function Vitals() {
 
       <section>
         <div className="flex items-baseline justify-between border-b border-foreground pb-2"><Label>Bio-Band Grid</Label><span className="meta">Live • 1.2 s refresh</span></div>
-        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-8">
           {m.map((x) => (
-            <div key={x.k} className={cn("rounded-[24px] border p-5 md:p-6", x.alert ? "border-alert" : "border-foreground")}>
-              <div className="flex items-center justify-between"><span className="meta">{x.k}</span>{(x.alert || (x.watch && anomaly)) && <Dot className="blip" />}</div>
-              <div className="mt-4 font-sans text-3xl tabular-nums md:text-5xl">{x.v}<span className="ml-1 text-sm text-meta">{x.u}</span></div>
+            <div key={x.k} className={cn("min-w-0 rounded-lg border p-4 sm:p-6", x.alert ? "border-alert" : "border-foreground")}>
+              <div className="flex items-center justify-between"><span className="meta !tracking-normal">{x.k}</span>{(x.alert || (x.watch && anomaly)) && <Dot className="blip" />}</div>
+              <div className="mt-4 font-mono text-2xl tabular-nums sm:text-3xl">{x.v}<span className="ml-1 text-sm text-meta">{x.u}</span></div>
             </div>
           ))}
         </div>
       </section>
 
+      <div className="border-l-[3px] border-foreground pl-5 font-mono text-[10px] leading-relaxed">
+        <div>PERSONALIZED THRESHOLD BASIS</div><p className="mt-2">{crew.age} years • {crew.sex === 'F' ? 'Female' : 'Male'} • BMI {crew.bmi} • HRmax = 220 − {crew.age} = {v.basis.maxHr} BPM. Resting pulse model ≈ 38% HRmax, with sex/BMI modifiers.</p>
+        <p className="mt-2">IOP baseline {v.basis.iop} mmHg • {v.basis.sans ? 'SANS history: closer ocular review.' : 'No SANS history reported.'} Dose review at {v.basis.radiationLimit} mSv • {v.basis.radiation ? 'Radiation sensitivity lowers the simulated threshold.' : 'Standard demonstration threshold.'}</p>
+      </div>
+      <SelfCheck />
+      <section className="border-t pt-6" aria-live="polite"><Label>Manual Crew Status</Label><p className="mt-3 font-mono text-xs">BP {v.bp} mmHg • Sleep {v.sleep} hrs • Blood sugar {measurement.sugar ?? '—'} mg/dL • Mood {measurement.mood ?? 'Not reported'}</p><p className="mt-3 font-serif">{risks.length ? risks.join(' ') : 'No self-reported flags in the demonstration review ranges.'}</p></section>
       <Frame label="Medical History Cross-Check">
         <div className="grid gap-4 md:grid-cols-[auto_1fr] md:gap-10">
           <div><div className="meta">{crew.handle} • {crew.age} • {crew.sex} • BMI {crew.bmi}</div><div className="mt-2 font-serif text-xl font-bold">{crew.history}</div></div>
@@ -52,7 +65,10 @@ function Vitals() {
         </div>
       </Frame>
 
-      <section className="grid grid-cols-[1fr_auto_1fr] gap-6 md:gap-12">
+      <Anatomy />
+      <Trends />
+      <Routine />
+      <section className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-6 md:gap-12">
         <div><Label className="mb-4 border-b border-foreground pb-2">Nominal</Label>
           <ul className="space-y-2 font-serif text-lg">{["Cardiac rhythm", "Thermoregulation", "Hydration", "Sleep debt", ...(anomaly ? [] : ["Respiration"])].map((s) => <li key={s}>{s}</li>)}</ul></div>
         <TiltLine />
