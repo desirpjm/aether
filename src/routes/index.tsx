@@ -1,4 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { CrewIntake } from "@/components/aether/CrewIntake";
+import { Illustration, Portrait, ScientificFooter } from "@/components/aether/Media";
 import { useState } from "react";
 import { CREWS, useAether } from "@/lib/aether";
 import { pageHead } from "@/lib/head";
@@ -16,39 +19,42 @@ function Entry() {
   const nav = useNavigate();
   const enter = () => { setCustomId(custom.trim() ? custom.trim().toUpperCase() : null); nav({ to: "/vitals" }); };
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-4xl rounded-[36px] border-[3px] border-foreground bg-surface-2 p-6 md:p-12">
+    <div className="min-h-screen px-5 py-10">
+      <div className="mx-auto w-full max-w-3xl border-[3px] border-foreground bg-surface-2 p-6 sm:p-10">
         <div className="flex items-start justify-between">
           <div className="meta">NASA Crew ID • Badge Access</div>
-          <button onClick={toggleDark} className="pill !text-[0.6rem]">{dark ? "Night-Vision" : "Daylight"}</button>
+          <Button variant="editorial" onClick={toggleDark} className="pill !text-[0.6rem]">{dark ? "Night-Vision" : "Daylight"}</Button>
         </div>
-        <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
-          <h1 className="text-right font-brand text-6xl font-semibold tracking-[0.08em] md:text-8xl">Aether</h1>
-          <TiltLine className="h-24" />
-          <p className="font-serif text-lg italic leading-snug md:text-xl">A cabin almanac for the body in orbit.</p>
+        <div className="mt-8"><Illustration kind="emblem" /></div>
+        <div className="mt-6 grid items-center gap-6 sm:grid-cols-[1fr_auto_1fr]">
+          <h1 className="text-center font-brand text-6xl font-normal sm:text-right md:text-8xl">Aether</h1>
+          <TiltLine className="hidden h-24 sm:block" />
+          <p className="text-center font-serif text-lg italic leading-snug sm:text-left md:text-xl">A cabin almanac for the body in orbit.</p>
         </div>
         <Label className="mt-10 border-b border-foreground pb-2">Select your badge</Label>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="mt-6 grid gap-8 md:grid-cols-3">
           {CREWS.map((c) => (
-            <button key={c.id} onClick={() => setCrewId(c.id)}
-              className={cn("card-ed flex flex-col items-center gap-3 border p-6 text-center transition", crew.id === c.id ? "border-foreground" : "border-transparent hover:border-meta")}>
-              <span className="h-20 w-20 rounded-full bg-node" />
+            <Button variant="editorial" key={c.id} onClick={() => setCrewId(c.id)}
+              className={cn("card-ed h-auto whitespace-normal flex flex-col items-center gap-3 border p-6 text-center transition", crew.id === c.id ? "border-foreground" : "border-transparent hover:border-meta")}>
+              <Portrait id={c.id} name={c.name} />
               <span className="flex items-center gap-2 font-sans text-xs tracking-widest">{crew.id === c.id && <Dot />}{c.handle}</span>
               <span className="font-serif text-lg font-bold">{c.name}</span>
               <span className="meta">{c.age} • {c.sex} • BMI {c.bmi}</span>
               <span className="font-sans text-sm text-muted-foreground">History: {c.history}</span>
-            </button>
+            </Button>
           ))}
         </div>
+        <CrewIntake />
         <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <label className="flex-1">
             <span className="meta">Or enter custom NASA Crew ID</span>
             <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="e.g. NASA-AX-0471"
               className="mt-2 block w-full border-b border-foreground bg-transparent py-2 font-sans tracking-widest outline-none placeholder:text-meta md:max-w-sm" />
           </label>
-          <button onClick={enter} className="action text-left">Authenticate & Enter Cabin →</button>
+          <Button variant="editorial" onClick={enter} className="action text-left">Authenticate & Enter Cabin →</Button>
         </div>
       </div>
+      <ScientificFooter />
     </div>
   );
 }
