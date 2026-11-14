@@ -24,7 +24,7 @@ export function Illustration({ kind }: { kind: 'emblem' | 'helmet' }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
     return (
-      <svg viewBox="0 0 200 200" className={kind === 'emblem' ? 'mx-auto h-12 w-24' : 'w-full'} fill="none" stroke="currentColor">
+      <svg viewBox="0 0 200 200" className={kind === 'emblem' ? 'mx-auto h-24 w-44' : 'w-full'} fill="none" stroke="currentColor">
         <ellipse cx="100" cy="100" rx="45" ry="60" />
         <ellipse cx="100" cy="100" rx="90" ry="20" transform="rotate(-25 100 100)" />
         {kind === 'helmet' && <path d="M55 90 Q100 45 145 90 L145 130 Q100 160 55 130 Z" />}
@@ -36,7 +36,7 @@ export function Illustration({ kind }: { kind: 'emblem' | 'helmet' }) {
       src={kind === 'emblem' ? '/aether-emblem.png' : '/helmet-seal.png'}
       alt={kind === 'emblem' ? 'Aether orbital emblem' : 'Suit helmet and oxygen seal'}
       onError={() => setFailed(true)}
-      className={kind === 'emblem' ? 'emblem mx-auto h-12 w-28 object-contain dark:invert' : 'h-full w-full object-contain dark:invert'}
+      className={kind === 'emblem' ? 'emblem mx-auto h-24 w-44 object-contain dark:invert' : 'h-full w-full object-contain dark:invert'}
     />
   );
 }
