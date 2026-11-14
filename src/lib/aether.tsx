@@ -1,30 +1,33 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-export type Crew = { id: string; handle: string; name: string; short: string; age: number; sex: string; bmi: number; history: string; baseline: string };
+import { SECTORS, type Crew, type Measurement } from "./telemetry";
+export { SECTORS } from "./telemetry";
+export type { Crew } from "./telemetry";
 export const CREWS: Crew[] = [
   { id: "vance", handle: "@VANCE", name: "Cmdr. Elena Vance", short: "Cmdr. Vance", age: 42, sex: "F", bmi: 21.8, history: "Mild SANS optic disc edema", baseline: "Baseline IOP 16 mmHg; current reading trends +3 mmHg above pre-flight." },
   { id: "chen", handle: "@CHEN", name: "Dr. Marcus Chen", short: "Dr. Chen", age: 38, sex: "M", bmi: 23.4, history: "Prior L4–L5 lumbar strain", baseline: "Spinal elongation 4.1 cm; bone density holding within 2% of baseline." },
   { id: "lin", handle: "@LIN", name: "Spec. Maya Lin", short: "Spec. Lin", age: 31, sex: "F", bmi: 20.5, history: "Solar radiation sensitivity", baseline: "Cumulative dose at 71% of personal limit; shelter threshold lowered to 0.8 µSv/h spike." },
 ];
 
-export type Sector = { id: string; name: string; orbit: string; tzOffset: number; temp: string; pressure: string; gravity: string; flux: string };
-export const SECTORS: Sector[] = [
-  { id: "iss", name: "ISS", orbit: "Low Earth Orbit", tzOffset: 0, temp: "−157 / +121 °C", pressure: "101.3 kPa", gravity: "0.00 g", flux: "0.42" },
-  { id: "gateway", name: "Lunar Gateway", orbit: "NRHO Orbit", tzOffset: 0, temp: "−173 / +127 °C", pressure: "70.3 kPa", gravity: "0.00 g", flux: "0.61" },
-  { id: "artemis", name: "Artemis Base", orbit: "Lunar South Pole", tzOffset: 0, temp: "−203 °C", pressure: "70.3 kPa / 0 atm", gravity: "0.166 g", flux: "0.57" },
-  { id: "transit", name: "Deep Space", orbit: "Mars Transit Habitat", tzOffset: 0, temp: "−270 °C", pressure: "101.3 kPa", gravity: "0.00 g", flux: "1.84" },
-  { id: "jezero", name: "Mars Surface", orbit: "Jezero Crater", tzOffset: -7, temp: "−63 °C", pressure: "0.61 kPa ext.", gravity: "0.38 g", flux: "0.67" },
-];
+export type Sector = typeof SECTORS[number];
 
 type State = {
-  crew: Crew; setCrewId: (id: string) => void; customId: string | null; setCustomId: (s: string | null) => void;
+  crew: Crew; registerCrew: (crew: Crew) => void; measurement: Measurement; logMeasurement: (m: Measurement) => void; routine: boolean[]; toggleRoutine: (i: number) => void; setCrewId: (id: string) => void; customId: string | null; setCustomId: (s: string | null) => void;
   dark: boolean; toggleDark: () => void; anomaly: boolean; toggleAnomaly: () => void;
   sector: Sector; setSectorId: (id: string) => void;
 };
 const Ctx = createContext<State | null>(null);
 
 export function AetherProvider({ children }: { children: ReactNode }) {
-  const [crewId, setCrewId] = useState("vance");
+  const [crewId, chooseCrew] = useState("vance");
+  const [customCrew, setCustomCrew] = useState<Crew | null>(null);
+  const [measurements, setMeasurements] = useState<Record<string, Measurement>>({});
+  const [routines, setRoutines] = useState<Record<string, boolean[]>>({});
+  const activeCrew = customCrew ?? CREWS.find(c => c.id === crewId) ?? CREWS[0];
+  if (!activeCrew) throw new Error("Crew roster unavailable");
+  const key = activeCrew.id;
+  const routine = routines[key] ?? [false, false, false, false];
+  const setCrewId = (id: string) => { setCustomCrew(null); chooseCrew(id); };
   const [customId, setCustomId] = useState<string | null>(null);
   const [dark, setDark] = useState(false);
   const [anomaly, setAnomaly] = useState(false);
@@ -32,9 +35,12 @@ export function AetherProvider({ children }: { children: ReactNode }) {
   useEffect(() => { document.documentElement.classList.toggle("dark", dark); }, [dark]);
   return (
     <Ctx.Provider value={{
-      crew: CREWS.find((c) => c.id === crewId)!, setCrewId, customId, setCustomId,
+      crew: activeCrew, setCrewId, customId, setCustomId,
+      registerCrew: c => { setCustomCrew(c); setCustomId(c.handle); },
+      measurement: measurements[key] ?? {}, logMeasurement: m => setMeasurements(all => ({ ...all, [key]: { ...all[key], ...m } })),
+      routine, toggleRoutine: i => setRoutines(all => ({ ...all, [key]: routine.map((v, n) => n === i ? !v : v) })),
       dark, toggleDark: () => setDark((d) => !d), anomaly, toggleAnomaly: () => setAnomaly((a) => !a),
-      sector: SECTORS.find((s) => s.id === sectorId)!, setSectorId,
+      sector: SECTORS.find((s) => s.id === sectorId) ?? SECTORS[0], setSectorId,
     }}>{children}</Ctx.Provider>
   );
 }

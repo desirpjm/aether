@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useAether } from "@/lib/aether";
 import { pageHead } from "@/lib/head";
 import { Dot, Label } from "@/components/aether/ui";
+import { Button } from "@/components/ui/button";
+import { hasHistory } from "@/lib/telemetry";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_console/protocols")({
@@ -27,25 +29,25 @@ const MOD = {
   airlock: { x: 20, y: 320, w: 150, h: 70, label: "Airlock" },
   shelter: { x: 230, y: 320, w: 150, h: 70, label: "Storm Shelter" },
 } as Record<string, { x: number; y: number; w: number; h: number; label: string }>;
-const c = (k: string) => { const m = MOD[k]!; return { x: m.x + m.w / 2, y: m.y + m.h / 2 }; };
+const c = (k: string) => { const m = MOD[k] ?? MOD.cmd; if (!m) return { x: 0, y: 0 }; return { x: m.x + m.w / 2, y: m.y + m.h / 2 }; };
 
 function Protocols() {
   const { anomaly, crew } = useAether();
-  const auto: Key = anomaly ? "hypoxia" : crew.id === "vance" ? "sans" : crew.id === "lin" ? "solar" : "micro";
+  const auto: Key = anomaly ? "hypoxia" : hasHistory(crew, "sans") || hasHistory(crew, "ocular") ? "sans" : hasHistory(crew, "radiation") ? "solar" : "micro";
   const [sel, setSel] = useState<Key>(auto);
   useEffect(() => setSel(auto), [auto]);
   const proto = P[sel];
   const a = c("cmd"), b = c(proto.target);
   const path = `M${a.x} ${a.y} L200 ${a.y} L200 ${b.y} L${b.x} ${b.y}`;
   return (
-    <div className="grid gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-8">
+    <div className="grid gap-8">
       <section>
         <Label className="border-b border-foreground pb-2">Context-Aware Checklist</Label>
         <div className="mt-4 flex flex-wrap gap-2">
           {(Object.keys(P) as Key[]).map((k) => (
-            <button key={k} onClick={() => setSel(k)} className={cn("pill flex items-center gap-1.5 !text-[0.6rem]", sel === k ? "bg-foreground text-background" : "border-meta text-meta hover:text-foreground")}>
+            <Button variant="outline" key={k} onClick={() => setSel(k)} className={cn("h-auto whitespace-normal rounded-none flex items-center gap-1.5 !text-[0.6rem]", sel === k ? "bg-foreground text-background" : "border-meta text-meta hover:text-foreground")}>
               {k === auto && <Dot className="h-1.5 w-1.5" />}{P[k].name}
-            </button>
+            </Button>
           ))}
         </div>
         <h1 className="mt-8 font-serif text-3xl font-bold md:text-4xl">{proto.name}</h1>
@@ -58,16 +60,16 @@ function Protocols() {
           ))}
         </ol>
       </section>
-      <div className="tilt-line hidden md:block" />
-      <section className="card-ed p-5 md:p-8">
-        <div className="flex items-baseline justify-between"><Label>Habitat Map</Label><span className="meta">Route → {MOD[proto.target]!.label}</span></div>
+      <div className="tilt-line hidden" />
+      <section className="border p-6 sm:p-10">
+        <div className="flex items-baseline justify-between"><Label>Habitat Map</Label><span className="meta">Route → {MOD[proto.target]?.label}</span></div>
         <svg viewBox="0 0 400 410" className="mt-4 w-full" fill="none">
           <g stroke="currentColor" strokeWidth=".75" className="text-meta">
             <line x1="170" y1="65" x2="230" y2="65" /><line x1="95" y1="110" x2="95" y2="170" /><line x1="305" y1="110" x2="305" y2="170" />
             <line x1="170" y1="215" x2="230" y2="215" /><line x1="95" y1="260" x2="95" y2="320" /><line x1="305" y1="260" x2="305" y2="320" />
           </g>
           {Object.entries(MOD).map(([k, m]) => (
-            <g key={k}>
+            <g key={k} role="button" tabIndex={0} aria-label={`Route to ${m.label}`} className="cursor-pointer" onClick={() => { const entry = (Object.keys(P) as Key[]).find(key => P[key].target === k); if (entry) setSel(entry); }} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); const entry = (Object.keys(P) as Key[]).find(key => P[key].target === k); if (entry) setSel(entry); } }}>
               <rect x={m.x} y={m.y} width={m.w} height={m.h} rx="4" stroke="currentColor" strokeWidth={k === proto.target ? 2.5 : 1} />
               <text x={m.x + 10} y={m.y + 20} fill="currentColor" style={{ font: "10px var(--font-sans)", letterSpacing: ".15em" }}>{m.label.toUpperCase()}</text>
             </g>

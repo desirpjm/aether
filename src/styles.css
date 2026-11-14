@@ -8,6 +8,14 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/inria-serif/400.css";
+@import "@fontsource/inria-serif/700.css";
+@import "@fontsource/im-fell-english-sc/400.css";
+@import "@fontsource/space-mono/400.css";
+@import "@fontsource/space-mono/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -73,6 +81,7 @@
 }
 
 @theme inline {
+  --font-mono: "Space Mono", monospace;
   --font-brand: "Cormorant Garamond", serif;
   --font-serif: "Inria Serif", serif;
   --font-sc: "IM Fell English SC", serif;
@@ -87,12 +96,12 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0 0 0);
+  --background: oklch(0.97 0 0);
+  --foreground: oklch(0.145 0 0);
   --surface: oklch(0.97 0 0);
   --surface-2: oklch(0.976 0 0);
-  --meta: oklch(0.72 0 0);
-  --alert: oklch(0.62 0.25 28);
+  --meta: oklch(0.725 0 0);
+  --alert: oklch(0.625 0.253 29);
   --frame: oklch(0.79 0.02 15);
   --node: oklch(0.88 0 0);
   --card: var(--surface);
@@ -144,10 +153,10 @@
 }
 
 @utility card-ed {
-  border-radius: 40px;
+  border-radius: 8px;
   background: var(--surface);
-  box-shadow: 0 4px 4px rgba(0,0,0,0.12);
-  @media (min-width: 768px) { border-radius: 32px; }
+  box-shadow: none;
+  @media (min-width: 768px) { border-radius: 8px; }
 }
 @utility tilt-line { width: 1px; background: var(--foreground); transform: rotate(-7deg); }
 @utility action {
@@ -162,3 +171,10 @@
 .dash-anim { animation: dash 1.2s linear infinite; }
 @keyframes blip { 50% { opacity: .25; } }
 .blip { animation: blip 1.4s ease-in-out infinite; }
+
+h1, h2, .font-brand { font-family: var(--font-brand); font-weight: 400; letter-spacing: 0; }
+.font-mono, .tabular-nums { font-family: var(--font-mono); }
+.action { white-space: normal; height: auto; padding: 0; border-radius: 0; justify-content: flex-start; background: transparent; }
+.emblem { object-position: center; }
+input, select { min-width: 0; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
