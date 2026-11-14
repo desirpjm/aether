@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Aether architecture
+- Keep session state in the Aether React provider and all physiological calculations in the pure telemetry module so every page and packet uses identical astronaut-specific readings without network dependencies.
+- Bundle editorial font packages alongside official head stylesheet links so fonts remain available when Google Fonts is unreachable; TanStack Start uses the root document head rather than an unused index.html.
+- Store uploaded illustrations as Lovable asset pointers with error fallbacks; the brand favicon remains a real square image in public.
+- Treat personalized medical limits, history charts, and dispatch acknowledgments as explicitly labeled demonstration models, not clinical guidance or live mission measurements.
