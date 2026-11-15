@@ -1,9 +1,9 @@
-# AETHER — Astronaut Environmental Telemetry, Health & Emergency Response
+# Aether: Astronaut Environmental Telemetry, Health & Emergency Response
 
 Built for the **2026 NASA International Space Apps Challenge** (*Create Health Monitoring Software for Astronauts on Space Missions*).
 
 ## Overview
-**AETHER** is an offline-ready, high-contrast astronaut biometric and life-support monitoring dashboard designed for low-glare readability and night-vision preservation in dimly lit spacecraft cabins.
+**Aether** is an offline-ready, high-contrast astronaut biometric and life-support monitoring dashboard designed for low-glare readability and night-vision preservation in dimly lit spacecraft cabins.
 
 ### Key Features
 - **Individualized Crew Risk Engine:** Cross-references live wearable bio-band vitals against each astronaut's age, biological sex, BMI, and prior medical history (including SANS ocular sensitivity, lumbar loading, and genomic radiation thresholds).
