@@ -31,6 +31,11 @@ function Entry() {
           <TiltLine className="hidden h-24 sm:block" />
           <p className="text-center font-serif text-lg italic leading-snug sm:text-left md:text-xl">A cabin almanac for the body in orbit.</p>
         </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 font-mono text-[10px] text-meta">
+          <a href="https://github.com/desirpjm/aether/" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-foreground">SOURCE CODE (GITHUB)</a>
+          <span>•</span>
+          <a href="https://aether-manual.tiiny.site/" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-foreground">CREW FLIGHT MANUAL</a>
+        </div>
         <Label className="mt-10 border-b border-foreground pb-2">Select your badge</Label>
         <div className="mt-6 grid gap-8 md:grid-cols-3">
           {CREWS.map((c) => (
