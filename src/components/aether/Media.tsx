@@ -45,7 +45,26 @@ export function ScientificFooter() {
   return (
     <footer className="mx-auto mt-10 max-w-3xl border-t border-meta px-5 py-8 font-mono text-[10px] leading-relaxed text-meta">
       BIOMEDICAL &amp; ENVIRONMENTAL MODELS REFERENCED FROM: NASA HUMAN RESEARCH PROGRAM (5 HAZARDS &amp; RISKS) • NASA-STD-3001 • ARTEMIS II ARCHeR / CIPHER / SANS • MARS 2020 MEDA • CSA CANS NEUTRON RADIATION MONITORING.
-      <p className="mt-3">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-meta/40 pt-4 text-foreground">
+        <a
+          href="https://github.com/desirpjm/aether/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-4 transition-opacity hover:opacity-60"
+        >
+          SOURCE CODE (GITHUB) 
+        </a>
+        <span>•</span>
+        <a
+          href="https://aether-manual.tiiny.site/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-4 transition-opacity hover:opacity-60"
+        >
+          CREW FLIGHT MANUAL 
+        </a>
+      </div>
+      <p className="mt-4">
         NASA Space Apps • Self-contained demonstration • Not a medical device. Readings, personalized limits, mission trends, and dispatch acknowledgments are simulated; reference constants are scenario assumptions, not certified operational settings.
       </p>
     </footer>
