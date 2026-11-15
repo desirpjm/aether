@@ -40,7 +40,7 @@ export function AetherProvider({ children }: { children: ReactNode }) {
       measurement: measurements[key] ?? {}, logMeasurement: m => setMeasurements(all => ({ ...all, [key]: { ...all[key], ...m } })),
       routine, toggleRoutine: i => setRoutines(all => ({ ...all, [key]: routine.map((v, n) => n === i ? !v : v) })),
       dark, toggleDark: () => setDark((d) => !d), anomaly, toggleAnomaly: () => setAnomaly((a) => !a),
-      sector: SECTORS.find((s) => s.id === sectorId) ?? SECTORS[0], setSectorId,
+      sector: SECTORS.find((s) => s.id === sectorId) ?? SECTORS[0]!, setSectorId,
     }}>{children}</Ctx.Provider>
   );
 }

@@ -29,7 +29,7 @@ const MOD = {
   airlock: { x: 20, y: 320, w: 150, h: 70, label: "Airlock" },
   shelter: { x: 230, y: 320, w: 150, h: 70, label: "Storm Shelter" },
 } as Record<string, { x: number; y: number; w: number; h: number; label: string }>;
-const c = (k: string) => { const m = MOD[k] ?? MOD.cmd; if (!m) return { x: 0, y: 0 }; return { x: m.x + m.w / 2, y: m.y + m.h / 2 }; };
+const c = (k: string) => { const m = MOD[k] ?? MOD['cmd']; if (!m) return { x: 0, y: 0 }; return { x: m.x + m.w / 2, y: m.y + m.h / 2 }; };
 
 function Protocols() {
   const { anomaly, crew } = useAether();
